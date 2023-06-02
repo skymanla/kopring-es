@@ -1,15 +1,18 @@
-version: '3.7'
+version: '3'
 services:
   es:
     build:
       context: .
       args:
-        VERSION: 7.15.2
+        VERSION: 8.1.2
     container_name: es
     environment:
-      - node.name=single-node
-      - cluster.name=backtony
+      - node.name=es
+      - cluster.name=docker-cluster
       - discovery.type=single-node
+      - xpack.security.enabled=false
+#    volumes:
+#      - /data/es:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
       - 9300:9300
@@ -18,10 +21,11 @@ services:
 
   kibana:
     container_name: kibana
-    image: docker.elastic.co/kibana/kibana:7.15.2
+    image: docker.elastic.co/kibana/kibana:8.1.2
     environment:
-      SERVER_NAME: kibana
+      SERVER_NAME: kibana.local
       ELASTICSEARCH_HOSTS: http://es:9200
+      ELASTICSEARCH_URL: http://es:9200
     ports:
       - 5601:5601
     # Elasticsearch Start Dependency
